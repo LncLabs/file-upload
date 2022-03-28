@@ -4,10 +4,13 @@
   "description": "CDN server for LNC Labs.",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
   "author": "izac999",
-  "license": "UNLICENSED",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/LncLabs/CDN"
+  },
   "dependencies": {
     "body-parser": "^1.19.2",
     "colors": "^1.4.0",
