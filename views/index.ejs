@@ -1,0 +1,14 @@
+<html>
+
+<body>
+  <!-- Show user's username and discord tag -->
+  <h1>Logged in as, <%= user.username %>#<%= user.discriminator %>!</h1>
+  <!-- Logout button -->
+  <button onclick="location.href = '/logout';">Logout</button>
+  <form ref='uploadForm' id='uploadForm' action='/upload' method='post' encType="multipart/form-data">
+    <input type="file" name="file" />
+    <input type='submit' value='Upload!' />
+  </form>
+</body>
+
+</html>
