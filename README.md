@@ -2,7 +2,7 @@
 
 ## Setup
 
-- wawa
+- wawa jahir si ves esto te gusta menocal
 
 ## Planned Features:
 
