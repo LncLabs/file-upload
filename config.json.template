@@ -1,0 +1,11 @@
+{
+    "admins": [
+        ""
+    ], // users that can access the site
+    "domain": "http://localhost:8080",
+    "port": 8080,
+    "usingCustomDomain": false,
+    "clientId": "", // Discord app client ID for login
+    "clientSecret": "", // Discord app client secret for login
+    "wawaToken": "", // Random generated token. can be any shit
+}
