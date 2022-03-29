@@ -5,7 +5,7 @@
     "domain": "http://localhost:8080",
     "port": 8080,
     "usingCustomDomain": false,
-    "clientId": "", // Discord app client ID for login
-    "clientSecret": "", // Discord app client secret for login
-    "wawaToken": "", // Random generated token. can be any shit
+    "clientId": "", // Discord app client ID for authentication
+    "clientSecret": "", // Discord app client secret for authentication
+    "wawaToken": "", // Random generated token. can be any shit but cant be empty.
 }
