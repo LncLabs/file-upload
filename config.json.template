@@ -1,7 +1,7 @@
 {
     "admins": [
         ""
-    ], // users that can access the site
+    ], // users that can access the main files folder
     "domain": "http://localhost:8080",
     "port": 8080,
     "usingCustomDomain": false,

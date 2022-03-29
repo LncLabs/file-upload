@@ -12,6 +12,14 @@
     <input multiple type="file" name="file" />
     <input type='submit' value='Upload!' />
   </form>
+  <p2>
+    Or instead upload files to your private folder so only you have access to them
+  </p2>
+  <form ref='uploadFormPrivate' id='uploadFormPrivate' action='/upload/private' method='post'
+    encType="multipart/form-data">
+    <input multiple type="file" name="file" />
+    <input type='submit' value='Upload!' />
+  </form>
   <!-- Let user know that is an admin and can upload files to main folder -->
   <% if (admins.includes(user.id)) { %>
     <h2>You are an admin!</h2>

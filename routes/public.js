@@ -40,7 +40,10 @@ module.exports = (CDN) => {
             const userFolder = path.join(usersPath, user);
             const userFolderExists = await fs.existsSync(userFolder);
 
-            if (!userFolderExists) await fs.mkdirSync(userFolder);
+            if (!userFolderExists) {
+                await fs.mkdirSync(userFolder);
+                await fs.mkdirSync(path.join(userFolder, 'private'));
+            }
         }
 
         // If user had set a returning url, we redirect him there, otherwise we redirect him to index.
@@ -83,5 +86,19 @@ module.exports = (CDN) => {
         const fileName = req.params.fileName;
 
         res.sendFile(path.join(usersPath, userId, fileName));
+    });
+
+    // User private file route
+    CDN.get('/users/:userId/private/:fileName', (req, res) => {
+        const userId = req.params.userId;
+        const fileName = req.params.fileName;
+
+        // Check if user is authenticated, if so we check if user's ID is same as the one in the URL.
+        if (!req.isAuthenticated() || req.user.id !== userId) return res.status(403).json({
+            status: "403",
+            message: "You are not allowed to access this file."
+        })
+
+        res.sendFile(path.join(usersPath, userId, 'private', fileName));
     });
 }
