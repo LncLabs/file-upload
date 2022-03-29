@@ -11,9 +11,10 @@ const bodyParser = require('body-parser');
 const Discord = require('discord.js');
 const morgan = require('morgan');
 const cfg = require('./config.json');
+const fs = require('fs');
 var colors = require('colors');
 
-// Initialize express app and session store.
+// Initialize express server and session store.
 const CDN = express();
 const MemoryStore = require('memorystore')(session);
 
@@ -87,7 +88,7 @@ CDN.use(fileUpload({
     preserveExtension: true,
     parseNested: true,
     debug: true,
-    uploadTimeout: 60000,
+    uploadTimeout: 60000
 }));
 
 // other middlewares
@@ -121,6 +122,16 @@ CDN.get("/login", (req, res, next) => {
 
 // Callback route.
 CDN.get("/callback", passport.authenticate("discord", { failureRedirect: "/" }), /* We authenticate the user, if user canceled we redirect him to index. */ async (req, res) => {
+
+    // Check if user has already his own files folder created with his ID.
+    if (req.user.id) {
+        const user = await req.user.id;
+        const userFolder = path.resolve(__dirname + `/users/${user}`);
+        const userFolderExists = await fs.existsSync(userFolder);
+
+        if (!userFolderExists) await fs.mkdirSync(userFolder);
+    }
+
     // If user had set a returning url, we redirect him there, otherwise we redirect him to index.
     if (req.session.backURL) {
         const url = req.session.backURL;
@@ -145,15 +156,13 @@ CDN.get("/logout", function (req, res) {
 // Index route.
 CDN.get("/", async (req, res) => {
     if (req.isAuthenticated()) {
-        // check if user is on admins array (config.json)
-        if (!cfg.admins.includes(req.user.id)) return res.status(403).send(`You are not authorized to access this page. Please logout clicking <a href='/logout'>here</a>.`);
-
         return res.render(__dirname + "/views/index.ejs", {
             user: req.user,
-            path: req.path
+            path: req.path,
+            admins: cfg.admins
         })
     } else {
-        res.send(`You are not logged in. Please login clicking <a href='/login'>here</a>.`);
+        return res.send(`You are not logged in. Please login clicking <a href='/login'>here</a>.`);
     }
 });
 
@@ -176,7 +185,7 @@ CDN.post('/upload', (req, res) => {
     }
 
     file = req.files.file;
-    uploadPath = __dirname + '/files/' + file.name;
+    uploadPath = __dirname + `/users/${req.user.id}/` + file.name;
 
     file.mv(uploadPath, (err) => {
         if (err) {
@@ -196,7 +205,58 @@ CDN.post('/upload', (req, res) => {
                 mimetype: file.mimetype,
                 size: file.size,
                 path: uploadPath,
-                link: cfg.domain + '/files/' + file.name
+                link: cfg.domain + `/users/${req.user.id}/` + file.name
+            }
+        });
+    });
+});
+
+// Admin file upload route
+CDN.post('/admin/upload', (req, res) => {
+    // check if request is authenticated
+    if (!req.isAuthenticated()) return res.status(403).json({
+        status: "403",
+        message: "Request is not authenticated."
+    })
+
+    // check if request is authenticated as admin
+    if (!cfg.admins.includes(req.user.id)) return res.status(403).json({
+        status: "403",
+        message: "You're not authorized to access this."
+    })
+
+    let file;
+    let uploadPath;
+
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).json({
+            status: '400',
+            message: 'No files were uploaded.',
+        })
+    }
+
+    file = req.files.file;
+    uploadPath = __dirname + `/files/` + file.name;
+
+    file.mv(uploadPath, (err) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({
+                status: '500',
+                message: 'Error while uploading file.',
+                error: err.message
+            });
+        }
+
+        res.status(200).json({
+            status: '200',
+            message: 'File uploaded successfully.',
+            data: {
+                name: file.name,
+                mimetype: file.mimetype,
+                size: file.size,
+                path: uploadPath,
+                link: cfg.domain + `/files/` + file.name
             }
         });
     });
@@ -209,6 +269,14 @@ CDN.get('/files/:fileName', (req, res) => {
     res.sendFile(__dirname + '/files/' + fileName);
 });
 
+// User file get route
+CDN.get('/users/:userId/:fileName', (req, res) => {
+    const userId = req.params.userId;
+    const fileName = req.params.fileName;
+
+    res.sendFile(__dirname + '/users/' + userId + '/' + fileName);
+});
+
 // Not found route
 CDN.use(function (req, res, next) {
     res.status(404).json({
@@ -216,7 +284,6 @@ CDN.use(function (req, res, next) {
         message: 'Not found.',
     });
 });
-
 
 // start server
 CDN.listen(cfg.port, null, null, () => {
