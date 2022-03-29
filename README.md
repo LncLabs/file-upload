@@ -11,3 +11,4 @@
 - Private Folder for each user (?)
 - Discord Webhooks Integration for better logging (errors, and stuff...)
 - Posibility to make any user upload their stuff to their own folder
+- Self API to allow uploads without Discord authentication
