@@ -9,7 +9,7 @@
     Here you can upload files to your own folder
   </p1>
   <form ref='uploadForm' id='uploadForm' action='/upload' method='post' encType="multipart/form-data">
-    <input type="file" name="file" />
+    <input multiple type="file" name="file" />
     <input type='submit' value='Upload!' />
   </form>
   <!-- Let user know that is an admin and can upload files to main folder -->
@@ -17,7 +17,7 @@
     <h2>You are an admin!</h2>
     <p2>You can upload files to the main folder!</p2>
     <form ref='uploadFormAdmin' id='uploadFormAdmin' action='/admin/upload' method='post' encType="multipart/form-data">
-      <input type="file" name="file" />
+      <input multiple type="file" name="file" />
       <input type='submit' value='Upload!' />
     </form>
     <% } %>

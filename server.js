@@ -185,29 +185,35 @@ CDN.post('/upload', (req, res) => {
     }
 
     file = req.files.file;
-    uploadPath = __dirname + `/users/${req.user.id}/` + file.name;
+    uploadPath = __dirname + `/users/${req.user.id}/`;
+    let data = [];
 
-    file.mv(uploadPath, (err) => {
-        if (err) {
+    function move(file, uploadPath, data, res, req) {
+        try {
+            file.mv(uploadPath + file.name);
+        } catch (err) {
             console.error(err);
             return res.status(500).json({
                 status: '500',
                 message: 'Error while uploading file.',
                 error: err.message
-            });
+            })
         }
 
-        res.status(200).json({
-            status: '200',
-            message: 'File uploaded successfully.',
-            data: {
-                name: file.name,
-                mimetype: file.mimetype,
-                size: file.size,
-                path: uploadPath,
-                link: cfg.domain + `/users/${req.user.id}/` + file.name
-            }
+        data.push({
+            name: file.name,
+            mimetype: file.mimetype,
+            size: file.size,
+            path: uploadPath + file.name,
+            link: cfg.domain + `/users/${req.user.id}/` + file.name
         });
+    }
+
+    Array.isArray(file) ? file.forEach((file) => move(file, uploadPath, data, res, req)) : move(file, uploadPath, data, res, req);
+    res.status(200).json({
+        status: '200',
+        message: 'Files uploaded successfully.',
+        data: data
     });
 });
 
@@ -236,29 +242,35 @@ CDN.post('/admin/upload', (req, res) => {
     }
 
     file = req.files.file;
-    uploadPath = __dirname + `/files/` + file.name;
+    uploadPath = __dirname + `/files/`;
+    let data = [];
 
-    file.mv(uploadPath, (err) => {
-        if (err) {
+    function move(file, uploadPath, data, res, req) {
+        try {
+            file.mv(uploadPath + file.name);
+        } catch (err) {
             console.error(err);
             return res.status(500).json({
                 status: '500',
                 message: 'Error while uploading file.',
                 error: err.message
-            });
+            })
         }
 
-        res.status(200).json({
-            status: '200',
-            message: 'File uploaded successfully.',
-            data: {
-                name: file.name,
-                mimetype: file.mimetype,
-                size: file.size,
-                path: uploadPath,
-                link: cfg.domain + `/files/` + file.name
-            }
+        data.push({
+            name: file.name,
+            mimetype: file.mimetype,
+            size: file.size,
+            path: uploadPath + file.name,
+            link: cfg.domain + `/files/` + file.name
         });
+    }
+
+    Array.isArray(file) ? file.forEach((file) => move(file, uploadPath, data, res, req)) : move(file, uploadPath, data, res, req);
+    res.status(200).json({
+        status: '200',
+        message: 'Files uploaded successfully.',
+        data: data
     });
 });
 
