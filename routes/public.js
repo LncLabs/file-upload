@@ -4,6 +4,7 @@ const url = require('url');
 const passport = require('passport');
 const fs = require('fs');
 const path = require('path');
+const logger = require('../logger.js');
 const cfg = require('../config.json');
 
 module.exports = (CDN) => {
@@ -42,7 +43,7 @@ module.exports = (CDN) => {
 
             if (!userFolderExists) {
                 await fs.mkdirSync(userFolder);
-                await fs.mkdirSync(path.join(userFolder, 'private'));
+                logger.info("New User", "User " + user + " has logged in for the first time.");
             }
         }
 
@@ -78,27 +79,5 @@ module.exports = (CDN) => {
         } else {
             return res.send(`You are not logged in. Please login clicking <a href='/login'>here</a>.`);
         }
-    });
-
-    // User file get route
-    CDN.get('/users/:userId/:fileName', (req, res) => {
-        const userId = req.params.userId;
-        const fileName = req.params.fileName;
-
-        res.sendFile(path.join(usersPath, userId, fileName));
-    });
-
-    // User private file route
-    CDN.get('/users/:userId/private/:fileName', (req, res) => {
-        const userId = req.params.userId;
-        const fileName = req.params.fileName;
-
-        // Check if user is authenticated, if so we check if user's ID is same as the one in the URL.
-        if (!req.isAuthenticated() || req.user.id !== userId) return res.status(403).json({
-            status: "403",
-            message: "You are not allowed to access this file."
-        })
-
-        res.sendFile(path.join(usersPath, userId, 'private', fileName));
     });
 }

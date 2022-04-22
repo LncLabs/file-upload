@@ -7,10 +7,12 @@ const ejs = require('ejs');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const Discord = require('discord.js');
 const morgan = require('morgan');
 const cfg = require('./config.json');
+const logger = require('./logger.js');
 var colors = require('colors');
+
+logger.debug('CDN SERVER', 'Starting up...');
 
 // Initialize express server and session store.
 const CDN = express();
@@ -35,7 +37,7 @@ try {
         protocol: domainUrl.protocol
     };
 } catch (e) {
-    console.error(colors.black(`[DOMAIN ERROR]`).bgRed, e);
+    logger.error('DOMAIN', e.stack);
     throw new TypeError("Invalid domain specified.");
 }
 
@@ -95,11 +97,9 @@ CDN.use(bodyParser.json());
 CDN.use(bodyParser.urlencoded({ extended: true }));
 CDN.use(morgan('dev'));
 
-// We host all of the files and the assets using their name in the root address.
-// A style.css file will be located at http://<url>/style.css
-// We can link it in any template using src="/assets/filename.extension"
-CDN.use("/", express.static(path.resolve(__dirname + `/assets/`)));
+// We host all of the files using their name in the root address.
 CDN.use("/files/", express.static(path.resolve(__dirname + `/files/`)));
+CDN.use("/users/", express.static(path.resolve(__dirname + `/users/`)));
 
 // We import all the routes.
 require('./routes/public.js')(CDN); // Public Routes.
@@ -115,13 +115,13 @@ CDN.use(function (req, res, next) {
 
 // start server
 CDN.listen(cfg.port, null, null, () => {
-    console.log(colors.black(`[CDN]`).bgBlue + ` CDN up and running, ready to serve requests at ${cfg.domain}`);
+    logger.info('CDN SERVER', `CDN up and running, ready to serve requests at ${cfg.domain}`);
 });
 
 process.on('uncaughtException', (err) => {
-    console.error(colors.black(`[UNCAUGHT EXCEPTION]`).bgRed, err);
+    logger.error('UNCAUGHT EXCEPTION', err.stack);
 });
 
 process.on("unhandledRejection", (err) => {
-    console.error(colors.black(`[UNHANDLED REJECTION]`).bgRed, err);
+    logger.error('UNHANDLED REJECTION', err.stack);
 });

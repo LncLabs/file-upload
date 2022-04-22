@@ -1,23 +1,14 @@
-<html>
+<!DOCTYPE html>
+<html lang="en-US">
 
 <body>
   <!-- Show user's username and discord tag -->
   <h1>Logged in as, <%= user.username %>#<%= user.discriminator %>!</h1>
-  <!-- Logout button -->
-  <button onclick="location.href = '/logout';">Logout</button>
   <p1>
     Here you can upload files to your own folder
   </p1>
   <form ref='uploadForm' id='uploadForm' action='/upload' method='post' encType="multipart/form-data">
-    <input multiple type="file" name="file" />
-    <input type='submit' value='Upload!' />
-  </form>
-  <p2>
-    Or instead upload files to your private folder so only you have access to them
-  </p2>
-  <form ref='uploadFormPrivate' id='uploadFormPrivate' action='/upload/private' method='post'
-    encType="multipart/form-data">
-    <input multiple type="file" name="file" />
+    <input multiple type="file" name="files" />
     <input type='submit' value='Upload!' />
   </form>
   <!-- Let user know that is an admin and can upload files to main folder -->
@@ -25,10 +16,13 @@
     <h2>You are an admin!</h2>
     <p2>You can upload files to the main folder!</p2>
     <form ref='uploadFormAdmin' id='uploadFormAdmin' action='/admin/upload' method='post' encType="multipart/form-data">
-      <input multiple type="file" name="file" />
+      <input multiple type="file" name="files" />
       <input type='submit' value='Upload!' />
     </form>
     <% } %>
+
+      <!-- Logout button -->
+      <button onclick="location.href = '/logout';">Logout</button>
 
 </body>
 
