@@ -1,4 +1,4 @@
-## Basic Cloud Storage
+## Basic File Upload/Cloud Storage System
 
 Basic file upload system/my own Cloud Storage or CDN idk using file-upload and express, dont ask me why i did this. This shit is pretty simple and basic so dont expect much, also i'm not that big full-stack backend/frontend dev so... you might already understand where this is going.
 
@@ -15,7 +15,7 @@ I might improve this later on, but since currently i'm busy with many other proj
 1. First clone this repository
 
     ```bash
-    git clone https://github.com/LncLabs/CDN.git
+    git clone https://github.com/LncLabs/file-upload.git
     ```
 
 2. Install dependencies
@@ -42,3 +42,7 @@ I might improve this later on, but since currently i'm busy with many other proj
     ```bash
     npm start
     ```
+
+## Planned Features
+
+- [] More friendly web interface and web file browser for better management and navigation.
