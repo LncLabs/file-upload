@@ -1,11 +1,13 @@
 {
     "admins": [
         ""
-    ], // users that can access the main files folder
+    ], // Discord users IDs that can upload to the main files folder
     "domain": "http://localhost:8080",
     "port": 8080,
     "usingCustomDomain": false,
     "clientId": "", // Discord app client ID for authentication
     "clientSecret": "", // Discord app client secret for authentication
-    "wawaToken": "", // Random generated token. can be any shit but cant be empty.
+    "wawaToken": "", // Random generated token. can be any shit but cant be empty. Make sure to be secure and at least long enough,
+    "webhookToken": "", Discord Webhook token for the logger.
+    "webhookUrl": "", // Discord Webhook ID for the logger.
 }
